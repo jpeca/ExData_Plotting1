@@ -1,0 +1,18 @@
+# Read file
+# Read only portion of file 66637:69517 (correspond to 01-02-2007 to 02-02-2007) to data frame
+headRw <- scan("household_power_consumption.txt", what="character", nlines=1, sep=";", quiet=TRUE)
+pw_cons <- read.table("household_power_consumption.txt", header=TRUE, sep=";", stringsAsFactors=FALSE, na.strings = "?", skip=66636, nrow=2880, col.names=headRw)
+pw_cons$datetime <- strptime(paste(pw_cons$Date, pw_cons$Time), format= "%d/%m/%Y %H:%M:%S")
+#Consturcting plot 3
+par(mfcol=c(1,1))    ## set layout
+par(mar=c(3,4.2,2,2))  ## set margins
+par(font.lab=2)      ## set font for label
+with (pw_cons, {
+  plot(datetime, Sub_metering_1, type="l", ylab="Energy sub metering", xlab="", cex.lab=0.9)
+  points(datetime, Sub_metering_2, type="l", col="red")
+  points(datetime, Sub_metering_3, type="l", col="blue")
+})
+legend ("topright", legend = c("Sub_metering_1     ","Sub_metering_2     ", "Sub_metering_3     ") , lty="solid", col=c("black","red","blue"), cex=0.9)
+#Copy plot to png file
+dev.copy(png, file="plot3.png",  width = 480, height = 480)
+dev.off() ## Close png file device
